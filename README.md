@@ -1,4 +1,4 @@
-# imagine 💭
+# imagine 🧞
 
 `imagine` - The simplest [`ImagePolicyWebhook`](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook) webhook example you'll ever find!
 
