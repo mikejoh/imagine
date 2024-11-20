@@ -1,6 +1,0 @@
-main.go:38:16: G402: TLS MinVersion too low. (gosec)
-main.go:47:13: G112: Potential Slowloris Attack because ReadHeaderTimeout is not configured in the http.Server (gosec)
-main.go:65:5: preferFprint: fmt.Fprintf(w, "This is the Imagine validating admission image<...>hecks if the image name contains: %s", imageName) should be preferred to the w.Write([]byte(fmt.Sprintf("This is the Imagine<...>ks if the image name contains: %s", imageName))) (gocritic)
-main.go:65:12: Error return value of `w.Write` is not checked (errcheck)
-main.go:70:11: Error return value of `w.Write` is not checked (errcheck)
-main.go:107:10: Error return value of `w.Write` is not checked (errcheck)
