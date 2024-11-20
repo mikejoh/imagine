@@ -2,6 +2,8 @@
 
 `imagine` - The simplest [`ImagePolicyWebhook`](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook) webhook example you'll ever find!
 
+_Yes, you're correct, i'm studying for the CKS exam!_
+
 ## Development
 
 Check that you have all necessary tools installed:
@@ -35,3 +37,7 @@ Send two requests that includes two admission requests with Pod container images
 ```bash
 curl --cacert ./certs/ca.crt https://localhost:4443
 ```
+
+---
+
+But wait! There will be more, if you stay tuned for a while i'll add the rest also. We're missing the Kubernetes related things! :smiling_face_with_tear:
