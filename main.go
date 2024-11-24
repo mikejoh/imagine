@@ -13,7 +13,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-type imageineOpts struct {
+type imagineOpts struct {
 	key       string
 	cert      string
 	imageName string
@@ -21,7 +21,7 @@ type imageineOpts struct {
 }
 
 func main() {
-	opts := imageineOpts{}
+	opts := imagineOpts{}
 
 	// Parse command line arguments
 	flag.StringVar(&opts.key, "key", "", "Path to the key file")

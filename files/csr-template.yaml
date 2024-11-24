@@ -1,0 +1,12 @@
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: imagine
+spec:
+  request: ${SIGNING_REQUEST}
+  signerName: kubernetes.io/kubelet-serving
+  expirationSeconds: 864000
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
