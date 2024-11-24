@@ -1,9 +1,12 @@
+VERSION := $(shell git describe --tags --always --dirty)
+
 check-tools:
 	@echo "Checking if you have the required tools installed:"
 	@echo
 	@which go
 	@which openssl
 	@which curl
+	@which docker
 
 gen-certs:
 	@echo "Generating certificates in certs directory"
@@ -30,4 +33,38 @@ send:
 	curl -k -X POST -H "Content-Type: application/json" --data @files/admission_req_2.json https://localhost:4443/
 	@echo
 
-PHONY: gen-certs run send
+docker-build:
+	@echo "Building the container image"
+	docker build -t mikejoh/imagine:$(VERSION) .
+
+docker-push:
+	@echo "Pushing the container image"
+	docker push mikejoh/imagine:$(VERSION)
+
+release:
+	@echo "Checking if the working directory is clean..."
+	@if [ -n "$$(git status --porcelain)" ]; then \
+		echo "Error: Working directory is dirty. Commit or stash your changes before releasing."; \
+		exit 1; \
+	fi
+	@echo "Checking if the current commit has a tag..."
+	@if [ -z "$$(git describe --tags --exact-match 2>/dev/null)" ]; then \
+		echo "Error: No tag found on the current commit. Please tag the commit before releasing."; \
+		exit 1; \
+	fi
+	@echo "Building and pushing the container image for release..."
+	make docker-build
+	make docker-push
+	@echo "Release completed successfully."
+
+deploy:
+	@echo "Rendering deployment manifest"
+	helm repo add mikejoh https://mikejoh.github.io/helm-charts/
+	helm repo update mikejoh
+	helm \
+		upgrade \
+		--install \
+		--namespace kube-system \
+		mikejoh/imagine
+
+PHONY: gen-certs run send docker-build docker-push release check-tools deploy
