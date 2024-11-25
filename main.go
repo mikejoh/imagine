@@ -87,13 +87,13 @@ func imagineHandler(imageName string) http.HandlerFunc {
 			return
 		}
 
-		var allowed bool
-		reason := fmt.Sprintf("image name contains disallowed string: %s", imageName)
+		allowed := true
+		reason := "Image name is allowed"
 
 		for _, container := range imageReview.Spec.Containers {
-			if !strings.Contains(container.Image, imageName) {
-				allowed = true
-				reason = ""
+			if strings.Contains(container.Image, imageName) {
+				allowed = false
+				reason = fmt.Sprintf("image name contains disallowed string: %s", imageName)
 				break
 			}
 		}

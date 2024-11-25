@@ -95,7 +95,7 @@ kubectl run --image nginx nginx-1
 vs
 
 ```bash
-kubectl run --image nope nginx-1
+kubectl run --image nope nginx-2
 ```
 
 You're now done! 🧞
