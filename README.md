@@ -1,10 +1,8 @@
-# imagine 🧞
+# imagine
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/mikejoh)](https://artifacthub.io/packages/search?repo=mikejoh)
 
-`imagine` - The simplest [`ImagePolicyWebhook`](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook) webhook example you'll ever find!
-
-_Yes, you're correct, i'm studying for the CKS exam!_
+`imagine` - The simplest [`ImagePolicyWebhook`](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook) webhook example you'll ever find!  🧞
 
 ## Development
 
@@ -85,3 +83,24 @@ spec:
       type: DirectoryOrCreate
     name: imagine
 ```
+
+Wait for a while to let the `kube-apiserver` start up again, check the status with e.g. `crictl`.
+
+You can now run the simplest of tests:
+
+```bash
+kubectl run --image nginx nginx-1
+```
+
+vs
+
+```bash
+kubectl run --image nope nginx-1
+```
+
+You're now done! 🧞
+
+#### Troubleshooting
+
+* Check the logs of `imagine`, it logs incoming requests verbatim, and also the status and reason of the validating admission control request.
+* Check the logs of the `kube-apiserver`.
