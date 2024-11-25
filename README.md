@@ -14,7 +14,7 @@ In the Kubernetes API request journey, `imagine` plays a role in the validating 
 
 ## Deploy in Kubernetes
 
-_I've deployed a small cluster using `kubeadm` on-top of KVM, see [this](https://github.com/mikejoh/k8s-on-kvm) repository on how i did that._
+_I'm kind of assuming that you've deployed a small cluster using `kubeadm`. I've done that on-top of KVM during development of this project, see [this](https://github.com/mikejoh/k8s-on-kvm) repository on how that was done._
 
 1. Deploy `imagine` using Helm, this deploys the latest released version of `imagine`:
 
