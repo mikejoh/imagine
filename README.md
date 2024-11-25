@@ -14,6 +14,8 @@ In the Kubernetes API request journey, `imagine` plays a role in the validating 
 
 ## Deploy in Kubernetes
 
+_I've deployed a small cluster using `kubeadm` on-top of KVM, see [this](https://github.com/mikejoh/k8s-on-kvm) repository on how i did that._
+
 1. Deploy `imagine` using Helm, this deploys the latest released version of `imagine`:
 
 ```bash
@@ -122,8 +124,8 @@ You can now start the webhook HTTP server:
 make run
 ```
 
-Send two requests that includes two admission requests with Pod container images named: `nope:latest` and `nginx:latest`. We'll not allow images containing `nope` to be started basically:
+Send two requests that includes two admission requests with Pod container images named: `nope:latest` and `nginx:latest`. We'll not allow container images containing `nope` to be started basically:
 
 ```bash
-curl --cacert ./certs/ca.crt https://localhost:4443
+make send
 ```
