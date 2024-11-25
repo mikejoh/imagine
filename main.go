@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -73,6 +74,15 @@ func imagineHandler(imageName string) http.HandlerFunc {
 		}
 
 		var admissionReview admission.AdmissionReview
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("Failed to read request body: %v", err)
+			http.Error(w, "could not read request body", http.StatusBadRequest)
+			return
+		}
+
+		log.Printf("Raw JSON request body: %s", string(body))
 		if err := json.NewDecoder(r.Body).Decode(&admissionReview); err != nil {
 			log.Printf("Failed to decode request body: %v", err)
 			http.Error(w, "could not decode request body", http.StatusBadRequest)
