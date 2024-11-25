@@ -6,7 +6,7 @@
 
 ## Introduction
 
-In the Kubernetes API request journey, imagine plays a role in the validating admission phase, where the red dot in the diagram marks our position. This project showcases how simple it can be to integrate a custom webhook into Kubernetes and validate container images effectively.
+In the Kubernetes API request journey, `imagine` plays a role in the validating admission phase, where the red dot in the diagram marks our position. This project showcases how simple it can be to integrate a custom webhook into Kubernetes and validate container images effectively.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6ca9ad4e-87ee-4c2a-82c2-2becf4c1e58f" />
