@@ -1,0 +1,18 @@
+kind: Config
+apiVersion: v1
+clusters:
+  - cluster:
+      certificate-authority: /etc/kubernetes/pki/ca.crt
+      server: https://imagine.imagine.svc.cluster.local:4443/
+    name: local
+contexts:
+  - context:
+      cluster: local
+      user: imagine
+    name: local
+current-context: local
+users:
+  - name: imagine
+    user:
+      client-certificate: /etc/kubernetes/pki/apiserver.crt
+      client-key: /etc/kubernetes/pki/apiserver.key

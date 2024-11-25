@@ -40,6 +40,5 @@ Send two requests that includes two admission requests with Pod container images
 curl --cacert ./certs/ca.crt https://localhost:4443
 ```
 
----
+### Deploy in Kubernetes
 
-_But wait! There will be more, if you stay tuned for a while i'll add the rest also. We're missing the Kubernetes related things!_ :smiling_face_with_tear:

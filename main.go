@@ -50,7 +50,7 @@ func main() {
 		TLSConfig: tlsConfig,
 	}
 
-	log.Printf("Starting the webhook server on port %d", opts.port)
+	log.Printf("Starting the imagine server on port %d", opts.port)
 	err = server.ListenAndServeTLS("", "")
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)
@@ -68,16 +68,19 @@ func imagineHandler(imageName string) http.HandlerFunc {
 
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			w.Write([]byte("Method not allowed"))
+			return
 		}
 
 		var admissionReview admission.AdmissionReview
 		if err := json.NewDecoder(r.Body).Decode(&admissionReview); err != nil {
+			log.Printf("Failed to decode request body: %v", err)
 			http.Error(w, "could not decode request body", http.StatusBadRequest)
 			return
 		}
 
 		var pod corev1.Pod
 		if err := json.Unmarshal(admissionReview.Request.Object.Raw, &pod); err != nil {
+			log.Printf("Failed to decode pod spec: %v", err)
 			http.Error(w, "could not decode pod spec", http.StatusBadRequest)
 			return
 		}
@@ -98,12 +101,15 @@ func imagineHandler(imageName string) http.HandlerFunc {
 		admissionReview.Response = &admissionResponse
 		responseBytes, err := json.Marshal(admissionReview)
 		if err != nil {
+			log.Printf("Failed to encode response: %v", err)
 			http.Error(w, "could not encode response", http.StatusInternalServerError)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write(responseBytes)
+		if _, err := w.Write(responseBytes); err != nil {
+			log.Printf("Failed to write response: %v", err)
+		}
 	}
 }
