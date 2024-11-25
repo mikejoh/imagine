@@ -90,12 +90,14 @@ You can now run the simplest of tests:
 
 ```bash
 kubectl run --image nginx nginx-1
+pod/nginx-1 created
 ```
 
 vs
 
 ```bash
 kubectl run --image nope nginx-2
+Error from server (Forbidden): pods "nginx-2" is forbidden: image policy webhook backend denied one or more images: image name contains disallowed string: nope
 ```
 
 You're now done! 🧞
