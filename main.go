@@ -59,6 +59,7 @@ func main() {
 
 func imagineHandler(imageName string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Received request: %s %s", r.Method, r.URL.Path)
 		if r.Method != http.MethodPost {
 			if r.Method == http.MethodGet {
 				w.WriteHeader(http.StatusOK)
@@ -75,6 +76,12 @@ func imagineHandler(imageName string) http.HandlerFunc {
 		if err := json.NewDecoder(r.Body).Decode(&admissionReview); err != nil {
 			log.Printf("Failed to decode request body: %v", err)
 			http.Error(w, "could not decode request body", http.StatusBadRequest)
+			return
+		}
+
+		if admissionReview.Request == nil {
+			log.Printf("AdmissionReview.Request is nil")
+			http.Error(w, "invalid admission review request", http.StatusBadRequest)
 			return
 		}
 
