@@ -1,0 +1,18 @@
+{
+  "kind": "ImageReview",
+  "apiVersion": "imagepolicy.k8s.io/v1alpha1",
+  "metadata": {
+    "creationTimestamp": null
+  },
+  "spec": {
+    "containers": [
+      {
+        "image": "nope"
+      }
+    ],
+    "namespace": "default"
+  },
+  "status": {
+    "allowed": false
+  }
+}

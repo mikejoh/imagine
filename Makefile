@@ -24,13 +24,13 @@ run:
 send:
 	@echo "Sending a request that includes a Pod container with allowed image name:"
 	@echo
-	curl -k -X POST -H "Content-Type: application/json" --data @files/admission_req_1.json https://localhost:4443/
+	curl -k -X POST -H "Content-Type: application/json" --data @files/image_review_1.json https://localhost:4443/
 	@echo
 	@echo
 
 	@echo "Sending a request that includes a Pod container with denied image name:"
 	@echo
-	curl -k -X POST -H "Content-Type: application/json" --data @files/admission_req_2.json https://localhost:4443/
+	curl -k -X POST -H "Content-Type: application/json" --data @files/image_review_2.json https://localhost:4443/
 	@echo
 
 docker-build:

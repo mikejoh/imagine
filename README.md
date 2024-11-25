@@ -42,3 +42,46 @@ curl --cacert ./certs/ca.crt https://localhost:4443
 
 ### Deploy in Kubernetes
 
+1. Deploy `imagine` using Helm, this deploys the latest released version of `imagine`:
+
+```bash
+make deploy
+```
+
+2. Generate the needed certificate to be used with `imagine`, this will be used by `imagine` as the server-side certificate of the webhook:
+
+```bash
+make k8s-gen-cert
+```
+
+3. Copy the following files to a specific directory on all control-plane nodes:
+
+```bash
+files/admissionconfig.yaml
+files/config.yaml
+```
+
+shall be copied to `/etc/kubernetes/imagine`, make sure you've created it first.
+
+4. Now change the `kube-apiserver` static Pod manifest (in `/etc/kubernetes/manifests`), you'll need to add the following configuration:
+
+* `ImagePolicyWebhook` to the `--enable-admission-plugins`flag
+* `--admission-control-config-file=/etc/kubernetes/imagine/admissionconfig.yaml`
+
+and:
+
+```bash
+...
+spec:
+  containers:
+  - volumeMounts:
+    - mountPath: /etc/kubernetes/imagine
+      name: imagine
+      readOnly: true
+...
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/imagine
+      type: DirectoryOrCreate
+    name: imagine
+```

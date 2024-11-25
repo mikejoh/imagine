@@ -23,10 +23,9 @@ type imagineOpts struct {
 func main() {
 	opts := imagineOpts{}
 
-	// Parse command line arguments
 	flag.StringVar(&opts.key, "key", "", "Path to the key file")
 	flag.StringVar(&opts.cert, "cert", "", "Path to the cert file")
-	flag.StringVar(&opts.imageName, "image-name", "", "Part of the image name used when validating")
+	flag.StringVar(&opts.imageName, "image-name", "", "Part of the image name that is not allowed")
 	flag.IntVar(&opts.port, "port", 4443, "Port to listen on")
 	flag.Parse()
 
@@ -89,14 +88,18 @@ func imagineHandler(imageName string) http.HandlerFunc {
 		}
 
 		var allowed bool
+		reason := fmt.Sprintf("image name contains disallowed string: %s", imageName)
+
 		for _, container := range imageReview.Spec.Containers {
-			if strings.Contains(container.Image, imageName) {
+			if !strings.Contains(container.Image, imageName) {
 				allowed = true
+				reason = ""
 				break
 			}
 		}
 
 		imageReview.Status.Allowed = allowed
+		imageReview.Status.Reason = reason
 
 		responseBytes, err := json.Marshal(imageReview)
 		if err != nil {
@@ -110,5 +113,7 @@ func imagineHandler(imageName string) http.HandlerFunc {
 		if _, err := w.Write(responseBytes); err != nil {
 			log.Printf("Failed to write response: %v", err)
 		}
+
+		log.Printf("Image: %s, Allowed: %t, Reason: %s", imageReview.Spec.Containers[0].Image, imageReview.Status.Allowed, imageReview.Status.Reason)
 	}
 }
