@@ -10,8 +10,7 @@ import (
 	"net/http"
 	"strings"
 
-	admission "k8s.io/api/admission/v1"
-	corev1 "k8s.io/api/core/v1"
+	imagepolicy "k8s.io/api/imagepolicy/v1alpha1"
 )
 
 type imagineOpts struct {
@@ -73,7 +72,7 @@ func imagineHandler(imageName string) http.HandlerFunc {
 			return
 		}
 
-		var admissionReview admission.AdmissionReview
+		var imageReview imagepolicy.ImageReview
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -83,40 +82,23 @@ func imagineHandler(imageName string) http.HandlerFunc {
 		}
 
 		log.Printf("Raw JSON request body: %s", string(body))
-		if err := json.NewDecoder(r.Body).Decode(&admissionReview); err != nil {
+		if err := json.Unmarshal(body, &imageReview); err != nil {
 			log.Printf("Failed to decode request body: %v", err)
 			http.Error(w, "could not decode request body", http.StatusBadRequest)
 			return
 		}
 
-		if admissionReview.Request == nil {
-			log.Printf("AdmissionReview.Request is nil")
-			http.Error(w, "invalid admission review request", http.StatusBadRequest)
-			return
-		}
-
-		var pod corev1.Pod
-		if err := json.Unmarshal(admissionReview.Request.Object.Raw, &pod); err != nil {
-			log.Printf("Failed to decode pod spec: %v", err)
-			http.Error(w, "could not decode pod spec", http.StatusBadRequest)
-			return
-		}
-
-		// Check if the provided image name is in the Pod's containers
 		var allowed bool
-		for _, container := range pod.Spec.Containers {
-			if !strings.Contains(container.Image, imageName) {
+		for _, container := range imageReview.Spec.Containers {
+			if strings.Contains(container.Image, imageName) {
 				allowed = true
 				break
 			}
 		}
 
-		admissionResponse := admission.AdmissionResponse{
-			Allowed: allowed,
-		}
+		imageReview.Status.Allowed = allowed
 
-		admissionReview.Response = &admissionResponse
-		responseBytes, err := json.Marshal(admissionReview)
+		responseBytes, err := json.Marshal(imageReview)
 		if err != nil {
 			log.Printf("Failed to encode response: %v", err)
 			http.Error(w, "could not encode response", http.StatusInternalServerError)
