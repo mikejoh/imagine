@@ -1,42 +1,16 @@
-# imagine
+# imagine 🧞
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/mikejoh)](https://artifacthub.io/packages/search?repo=mikejoh)
 
-`imagine` - The simplest [`ImagePolicyWebhook`](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook) webhook example you'll ever find!  🧞
+`imagine` - The simplest [`ImagePolicyWebhook`](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook) webhook example you'll ever find!
 
-## Development
+## Introduction
 
-Check that you have all necessary tools installed:
+In the Kubernetes API request journey, imagine plays a role in the validating admission phase, where the red dot in the diagram marks our position. This project showcases how simple it can be to integrate a custom webhook into Kubernetes and validate container images effectively.
 
-```bash
-make check-tools
-```
-
-### Local testing
-
-Generate certificates:
-
-1. Generates the CA private key
-2. Generates the CA certificate
-3. Generates the private key to be used by the webhook HTTP server
-4. Generates the webhook HTTP server CSR
-5. Signs the CSR with the CA's key and certificate to issue the webhook HTTP server certificate
-
-```bash
-make gen-certs
-```
-
-You can now start the webhook HTTP server:
-
-```bash
-make run
-```
-
-Send two requests that includes two admission requests with Pod container images named: `nope:latest` and `nginx:latest`. We'll not allow images containing `nope` to be started basically:
-
-```bash
-curl --cacert ./certs/ca.crt https://localhost:4443
-```
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6ca9ad4e-87ee-4c2a-82c2-2becf4c1e58f" />
+</p>
 
 ## Deploy in Kubernetes
 
@@ -119,3 +93,37 @@ Congratulations, you're now done! 🎉
 
 * Check the logs of `imagine`, it logs incoming requests verbatim, and also the status and reason of the validating admission control request.
 * Check the logs of the `kube-apiserver`.
+
+## Development
+
+Check that you have all necessary tools installed:
+
+```bash
+make check-tools
+```
+
+### Local testing
+
+Generate certificates:
+
+1. Generates the CA private key
+2. Generates the CA certificate
+3. Generates the private key to be used by the webhook HTTP server
+4. Generates the webhook HTTP server CSR
+5. Signs the CSR with the CA's key and certificate to issue the webhook HTTP server certificate
+
+```bash
+make gen-certs
+```
+
+You can now start the webhook HTTP server:
+
+```bash
+make run
+```
+
+Send two requests that includes two admission requests with Pod container images named: `nope:latest` and `nginx:latest`. We'll not allow images containing `nope` to be started basically:
+
+```bash
+curl --cacert ./certs/ca.crt https://localhost:4443
+```
