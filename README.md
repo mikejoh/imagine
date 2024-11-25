@@ -38,7 +38,7 @@ Send two requests that includes two admission requests with Pod container images
 curl --cacert ./certs/ca.crt https://localhost:4443
 ```
 
-### Deploy in Kubernetes
+## Deploy in Kubernetes
 
 1. Deploy `imagine` using Helm, this deploys the latest released version of `imagine`:
 
@@ -100,9 +100,22 @@ kubectl run --image nope nginx-2
 Error from server (Forbidden): pods "nginx-2" is forbidden: image policy webhook backend denied one or more images: image name contains disallowed string: nope
 ```
 
-You're now done! 🧞
+And from the perspective of `imagine` these requests looks something like this:
 
-#### Troubleshooting
+```bash
+imagine-67d4f474cf-4hf8m 2024/11/25 20:22:40 Received request: POST /
+imagine-67d4f474cf-4hf8m 2024/11/25 20:22:40 Raw JSON request body: {"kind":"ImageReview","apiVersion":"imagepolicy.k8s.io/v1alpha1","metadata":{"creationTimestamp":null},"s
+pec":{"containers":[{"image":"nginx"}],"namespace":"default"},"status":{"allowed":false}}
+imagine-67d4f474cf-4hf8m 2024/11/25 20:22:40 Image: nginx, Allowed: true, Reason: Image name is allowed
+imagine-67d4f474cf-4hf8m 2024/11/25 20:22:53 Received request: POST /
+imagine-67d4f474cf-4hf8m 2024/11/25 20:22:53 Raw JSON request body: {"kind":"ImageReview","apiVersion":"imagepolicy.k8s.io/v1alpha1","metadata":{"creationTimestamp":null},"s
+pec":{"containers":[{"image":"nope"}],"namespace":"default"},"status":{"allowed":false}}
+imagine-67d4f474cf-4hf8m 2024/11/25 20:22:53 Image: nope, Allowed: false, Reason: image name contains disallowed string: nope
+```
+
+Congratulations, you're now done! 🎉
+
+### Troubleshooting
 
 * Check the logs of `imagine`, it logs incoming requests verbatim, and also the status and reason of the validating admission control request.
 * Check the logs of the `kube-apiserver`.
