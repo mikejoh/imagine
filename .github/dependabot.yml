@@ -4,3 +4,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      k8s-deps:
+        patterns:
+          - "*k8s.io*"
